@@ -40,13 +40,13 @@
             z-index: 1000;
             background: rgba(0,0,0,0.7);
             color: white;
-            padding: 10px 20px;
+            padding: 20px 20px;
             border-radius: 5px;
             font-size: 16px;
         }
         .nav-button {
             position: fixed;
-            top: 50%;
+            top: 30%;
             transform: translateY(-50%);
             z-index: 1000;
             background: rgba(0,0,0,0.7);
@@ -98,29 +98,31 @@
     <a-scene embedded style="height: 100vh;">
         <a-assets>
             <!-- Caral -->
-            <img id="caral1" src="recorridos/caral1.png">
-            <img id="caral2" src="recorridos/caral2.png">
-            <img id="caral3" src="recorridos/caral3.png">
-            
+            <img id="caral1" src="recorridos/caral.png">
+            <img id="caral2" src="recorridos/caral.png">
+            <img id="caral3" src="recorridos/caral.png">
+            <img id="caral3" src="recorridos/caral.png">
+            <img id="caral3" src="recorridos/caral.png">
+                        
             <!-- Pachacamac -->
-            <img id="pachacamac1" src="recorridos/pachacamac1.png">
-            <img id="pachacamac2" src="recorridos/pachacamac2.png">
+            <img id="pachacamac1" src="recorridos/pachacamac.png">
+            <img id="pachacamac2" src="recorridos/pachacamac.png">
             
             <!-- Raqchi -->
-            <img id="raqchi1" src="recorridos/Raqchi1.png">
-            <img id="raqchi2" src="recorridos/Raqchi2.png">
+            <img id="raqchi1" src="recorridos/Raqchi.png">
+            <img id="raqchi2" src="recorridos/Raqchi.png">
             
             <!-- San Francisco de Cusco -->
-            <img id="cusco1" src="recorridos/san_francisco1.png">
-            <img id="cusco2" src="recorridos/san_francisco2.png">
+            <img id="cusco1" src="recorridos/san francisco de cusco.png">
+            <img id="cusco2" src="recorridos/san francisco de cusco.pngg">
             
             <!-- Saqsaywaman -->
-            <img id="saqsaywaman1" src="recorridos/Saqsaywaman1.png">
-            <img id="saqsaywaman2" src="recorridos/Saqsaywaman2.png">
+            <img id="saqsaywaman1" src="recorridos/Saqsaywaman.png">
+            <img id="saqsaywaman2" src="recorridos/Saqsaywaman.png">
             
             <!-- Tipón -->
-            <img id="tipon1" src="recorridos/tipon1.png">
-            <img id="tipon2" src="recorridos/tipon2.png">
+            <img id="tipon1" src="recorridos/tipon.png">
+            <img id="tipon2" src="recorridos/tipon.png">
         </a-assets>
 
         <a-sky id="panorama" src="#caral1"></a-sky>
@@ -132,14 +134,14 @@
     <script>
         // Configuración de imágenes por ubicación
         const ubicaciones = {
-            caral: ['caral1', 'caral2', 'caral3'],
-            pachacamac: ['pachacamac1', 'pachacamac2'],
+            caral: ['caral1', 'caral2', 'caral3', 'caral4', 'caral5'],
+            pachacamac: ['pachacamac1', 'pachacamac2' , 'pachacamac2', 'pachacamac2', 'pachacamac2'],
                     // ...continuación del script
 
-        raqchi: ['raqchi1', 'raqchi2'],
-        cusco: ['cusco1', 'cusco2'],
-        saqsaywaman: ['saqsaywaman1', 'saqsaywaman2'],
-        tipon: ['tipon1', 'tipon2'],
+        raqchi: ['raqchi1', 'raqchi2', 'raqchi2', 'raqchi2', 'raqchi2'],
+        cusco: ['cusco1', 'cusco2', 'cusco2', 'cusco2', 'cusco2'],
+        saqsaywaman: ['saqsaywaman1', 'saqsaywaman2', 'saqsaywaman2', 'saqsaywaman2', 'saqsaywaman2'],
+        tipon: ['tipon1' , 'tipon2', 'tipon2', 'tipon2', 'tipon2'],
         // Puedes agregar más ubicaciones e imágenes aquí
     };
 
