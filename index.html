@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recorrido 360°</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        .nav-button {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 20px 15px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .nav-button:hover {
+            background: rgba(0,0,0,0.9);
+        }
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+        .image-counter {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-counter">
+        <span id="current-image">1</span> / <span id="total-images">6</span>
+    </div>
+    
+    <button class="nav-button prev-btn" id="prevBtn">‹</button>
+    <button class="nav-button next-btn" id="nextBtn">›</button>
+
+    <a-scene embedded style="height: 100vh;">
+        <a-assets>
+            <img id="image1" src="recorridos/caral.png" crossorigin="anonymous">
+            <img id="image2" src="recorridos/pachacamac.png" crossorigin="anonymous">
+            <img id="image3" src="recorridos/Raqchi.png" crossorigin="anonymous">
+            <img id="image4" src="recorridos/san francisco de cusco.png" crossorigin="anonymous">
+            <img id="image5" src="recorridos/Saqsaywaman.png" crossorigin="anonymous">
+            <img id="image6" src="recorridos/tipon.png" crossorigin="anonymous">
+        </a-assets>
+
+        <!-- Cielo 360 que cambiará las imágenes -->
+        <a-sky id="panorama" src="#image1" rotation="0 0 0"></a-sky>
+        
+        <!-- Cámara con controles -->
+        <a-camera wasd-controls="enabled: false" look-controls="enabled: true">
+            <a-cursor color="white" opacity="0.8" scale="0.5 0.5 0.5"></a-cursor>
+        </a-camera>
+    </a-scene>
+
+    <script>
+        // Array con las imágenes
+        const images = [
+            'image1', 'image2', 'image3', 'image4', 'image5', 'image6'
+        ];
+        
+        let currentImageIndex = 0;
+        const totalImages = images.length;
+        
+        // Elementos del DOM
+        const panorama = document.querySelector('#panorama');
+        const prevBtn = document.querySelector('#prevBtn');
+        const nextBtn = document.querySelector('#nextBtn');
+        const currentImageSpan = document.querySelector('#current-image');
+        const totalImagesSpan = document.querySelector('#total-images');
+        
+        // Inicializar contador
+        totalImagesSpan.textContent = totalImages;
+        
+        // Función para cambiar imagen
+        function changeImage(index) {
+            if (index >= 0 && index < totalImages) {
+                currentImageIndex = index;
+                panorama.setAttribute('src', '#' + images[currentImageIndex]);
+                currentImageSpan.textContent = currentImageIndex + 1;
+                
+                // Resetear rotación para una mejor experiencia
+                panorama.setAttribute('rotation', '0 0 0');
+            }
+        }
+        
+        // Función para ir a la siguiente imagen
+        function nextImage() {
+            const nextIndex = (currentImageIndex + 1) % totalImages;
+            changeImage(nextIndex);
+        }
+        
+        // Función para ir a la imagen anterior
+        function prevImage() {
+            const prevIndex = (currentImageIndex - 1 + totalImages) % totalImages;
+            changeImage(prevIndex);
+        }
+        
+        // Event listeners para los botones
+        nextBtn.addEventListener('click', nextImage);
+        prevBtn.addEventListener('click', prevImage);
+        
+        // Navegación con teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                nextImage();
+            } else if (event.key === 'ArrowLeft') {
+                prevImage();
+            }
+        });
+        
+        // Prevenir zoom en móviles
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
