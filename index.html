@@ -3,235 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recorrido 360° Turístico</title>
+    <title>Tour Virtual 360°</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <style>
-        body { margin: 0; font-family: Arial, sans-serif; }
-        /* Estilos del menú lateral */
-        .menu-lateral {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1000;
-            background: rgba(0,0,0,0.8);
-            padding: 15px;
-            border-radius: 10px;
-            min-width: 120px;
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
-        .menu-item {
-            color: white;
-            padding: 10px;
-            margin: 5px 0;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background 0.3s;
-            text-align: center;
+        a-scene {
+            width: 100vw !important;
+            height: 100vh !important;
+            min-height: 100vh !important;
+            position: fixed !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
         }
-        .menu-item:hover, .menu-item.active {
-            background: rgba(255,255,255,0.2);
-        }
-        /* Resto de estilos (contador y flechas) */
-        .image-counter {
+        
+        .contador-imagenes {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             color: white;
-            padding: 20px 20px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 15px;
             font-size: 16px;
+            font-weight: bold;
         }
-        .nav-button {
+        
+        .flecha-nav {
             position: fixed;
-            top: 30%;
+            top: 50%;
             transform: translateY(-50%);
             z-index: 1000;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             color: white;
             border: none;
             padding: 20px 15px;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background 0.3s;
+            border-radius: 50%;
+            transition: all 0.3s;
+            font-weight: bold;
         }
-        .prev-btn { left: 160px; } /* Ajustado para no solapar con el menú */
-        .next-btn { right: 20px; }
-        .nav-button:hover {
+        .flecha-nav:hover {
             background: rgba(0,0,0,0.9);
+            transform: translateY(-50%) scale(1.1);
         }
-        .location-title {
+        .flecha-izq { left: 20px; }
+        .flecha-der { right: 20px; }
+        
+        .botones-turisticos {
             position: fixed;
-            top: 20px;
-            left: 180px;
-            color: white;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        .boton-lugar {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #1636ff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .boton-lugar:hover {
+            background: #0d1f6b;
+            transform: translateY(-2px);
+        }
+        .boton-lugar.active {
+            background: #00ff88;
+            color: #000;
+        }
+        
+        .nombre-lugar {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .botones-turisticos {
+                width: 96vw;
+                overflow-x: auto;
+                padding: 10px;
+                gap: 10px;
+            }
+            .boton-lugar {
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
+            .flecha-nav {
+                padding: 15px 12px;
+                font-size: 20px;
+            }
+        }
+        @media (display-mode: vr), (display-mode: immersive-vr) {
+            .botones-turisticos, .contador-imagenes, .flecha-nav, .nombre-lugar { 
+                display: none !important; 
+            }
         }
     </style>
 </head>
 <body>
-    <div class="location-title" id="locationTitle">Caral</div>
-    <div class="image-counter">
-        <span id="current-image">1</span> / <span id="total-images">3</span>
-    </div>
-    
-    <!-- Menú lateral -->
-    <div class="menu-lateral">
-        <div class="menu-item active" data-location="caral">Caral</div>
-        <div class="menu-item" data-location="pachacamac">Pachacamac</div>
-        <div class="menu-item" data-location="raqchi">Raqchi</div>
-        <div class="menu-item" data-location="cusco">San Francisco de Cusco</div>
-        <div class="menu-item" data-location="saqsaywaman">Saqsaywaman</div>
-        <div class="menu-item" data-location="tipon">Tipón</div>
-    </div>
-
-    <!-- Botones de navegación -->
-    <button class="nav-button prev-btn" id="prevBtn">‹</button>
-    <button class="nav-button next-btn" id="nextBtn">›</button>
-
-    <a-scene embedded style="height: 100vh;">
+    <a-scene embedded>
         <a-assets>
-            <!-- Caral -->
-            <img id="caral1" src="recorridos/caral.png">
-            <img id="caral2" src="recorridos/caral.png">
-            <img id="caral3" src="recorridos/caral.png">
-            <img id="caral3" src="recorridos/caral.png">
-            <img id="caral3" src="recorridos/caral.png">
-                        
-            <!-- Pachacamac -->
-            <img id="pachacamac1" src="recorridos/pachacamac.png">
-            <img id="pachacamac2" src="recorridos/pachacamac.png">
             
-            <!-- Raqchi -->
-            <img id="raqchi1" src="recorridos/Raqchi.png">
-            <img id="raqchi2" src="recorridos/Raqchi.png">
+            <img id="caral-1" src="recorridos/caral.png">
+
+            <img id="pachacamac-1" src="recorridos/pachacamac.png">
+
             
-            <!-- San Francisco de Cusco -->
-            <img id="cusco1" src="recorridos/san francisco de cusco.png">
-            <img id="cusco2" src="recorridos/san francisco de cusco.pngg">
+            <img id="raqchi-1" src="recorridos/raqchi.png">
+
             
-            <!-- Saqsaywaman -->
-            <img id="saqsaywaman1" src="recorridos/Saqsaywaman.png">
-            <img id="saqsaywaman2" src="recorridos/Saqsaywaman.png">
+            <img id="saqsaywaman-1" src="recorridos/saqsaywaman.png">
             
-            <!-- Tipón -->
-            <img id="tipon1" src="recorridos/tipon.png">
-            <img id="tipon2" src="recorridos/tipon.png">
+            
+            <img id="tipon-1" src="recorridos/tipon.png">
+
         </a-assets>
 
-        <a-sky id="panorama" src="#caral1"></a-sky>
-        <a-camera wasd-controls="enabled: false" look-controls="enabled: true">
-            <a-cursor color="white" opacity="0.8" scale="0.5 0.5 0.5"></a-cursor>
-        </a-camera>
+        <a-sky id="fondo-360" src="#caral-1"></a-sky>
+        
+        <a-entity id="modelo3d-container" position="0 4 -2">
+            <a-entity 
+                obj-model="obj: #model-3d; mtl: #model-mtl"
+                scale="0.6 0.6 0.6"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 30000">
+            </a-entity>
+        </a-entity>
+
+        <a-light type="ambient" color="#ffffff" intensity="0.7"></a-light>
+        <a-light type="directional" position="0 5 2" intensity="0.9"></a-light>
+        
+        <a-entity camera look-controls position="0 1.6 0"></a-entity>
     </a-scene>
 
+    <div class="contador-imagenes" id="contador">1 / 1</div>
+    <div class="nombre-lugar" id="nombreLugar">CARAL</div>
+    
+    <button class="flecha-nav flecha-izq" id="flechaIzq">‹</button>
+    <button class="flecha-nav flecha-der" id="flechaDer">›</button>
+    
+    <div class="botones-turisticos">
+        <button class="boton-lugar active" data-lugar="caral">Caral</button>
+        <button class="boton-lugar" data-lugar="pachacamac">Pachacamac</button>
+        <button class="boton-lugar" data-lugar="raqchi">Raqchi</button>
+        <button class="boton-lugar" data-lugar="saqsaywaman">Saqsaywaman</button>
+        <button class="boton-lugar" data-lugar="tipon">Tipón</button>
+    </div>
+
     <script>
-        // Configuración de imágenes por ubicación
-        const ubicaciones = {
-            caral: ['caral1', 'caral2', 'caral3', 'caral4', 'caral5'],
-            pachacamac: ['pachacamac1', 'pachacamac2' , 'pachacamac2', 'pachacamac2', 'pachacamac2'],
-                    // ...continuación del script
+        const configuracion = {
+            caral: {
+                nombre: "CARAL",
+                imagenes: ["#caral-1"]
+            },
+            pachacamac: {
+                nombre: "PACHACAMAC",
+                imagenes: ["#pachacamac-1"]
+            },
+            raqchi: {
+                nombre: "RAQCHI",
+                imagenes: ["#raqchi-1"]
+            },
 
-        raqchi: ['raqchi1', 'raqchi2', 'raqchi2', 'raqchi2', 'raqchi2'],
-        cusco: ['cusco1', 'cusco2', 'cusco2', 'cusco2', 'cusco2'],
-        saqsaywaman: ['saqsaywaman1', 'saqsaywaman2', 'saqsaywaman2', 'saqsaywaman2', 'saqsaywaman2'],
-        tipon: ['tipon1' , 'tipon2', 'tipon2', 'tipon2', 'tipon2'],
-        // Puedes agregar más ubicaciones e imágenes aquí
-    };
-
-    // Nombres bonitos para mostrar en el título
-    const nombresUbicaciones = {
-        caral: "Caral",
-        pachacamac: "Pachacamac",
-        raqchi: "Raqchi",
-        cusco: "San Francisco de Cusco",
-        saqsaywaman: "Saqsaywaman",
-        tipon: "Tipón"
-    };
-
-    let ubicacionActual = 'caral';
-    let imagenActual = 0;
-
-    // Elementos del DOM
-    const panorama = document.querySelector('#panorama');
-    const prevBtn = document.querySelector('#prevBtn');
-    const nextBtn = document.querySelector('#nextBtn');
-    const currentImageSpan = document.querySelector('#current-image');
-    const totalImagesSpan = document.querySelector('#total-images');
-    const menuItems = document.querySelectorAll('.menu-item');
-    const locationTitle = document.getElementById('locationTitle');
-
-    // Función para mostrar la imagen actual
-    function mostrarImagen(index) {
-        const imagenes = ubicaciones[ubicacionActual];
-        if (index >= 0 && index < imagenes.length) {
-            imagenActual = index;
-            panorama.setAttribute('src', '#' + imagenes[imagenActual]);
-            currentImageSpan.textContent = imagenActual + 1;
-            totalImagesSpan.textContent = imagenes.length;
-        }
-    }
-
-    // Función para cambiar de ubicación
-    function cambiarUbicacion(nuevaUbicacion) {
-        ubicacionActual = nuevaUbicacion;
-        imagenActual = 0;
-        locationTitle.textContent = nombresUbicaciones[ubicacionActual] || ubicacionActual;
-        mostrarImagen(imagenActual);
-
-        // Actualizar el menú visualmente
-        menuItems.forEach(item => {
-            if (item.getAttribute('data-location') === nuevaUbicacion) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
+            saqsaywaman: {
+                nombre: "SAQSAYWAMAN",
+                imagenes: ["#saqsaywaman-1"]
+            },
+            tipon: {
+                nombre: "TIPÓN",
+                imagenes: ["#tipon-1"]
             }
-        });
-    }
+        };
 
-    // Navegación por imágenes
-    function siguienteImagen() {
-        const imagenes = ubicaciones[ubicacionActual];
-        const nextIndex = (imagenActual + 1) % imagenes.length;
-        mostrarImagen(nextIndex);
-    }
+        let lugarActual = 'caral';
+        let imagenActual = 0;
 
-    function anteriorImagen() {
-        const imagenes = ubicaciones[ubicacionActual];
-        const prevIndex = (imagenActual - 1 + imagenes.length) % imagenes.length;
-        mostrarImagen(prevIndex);
-    }
+        const cielo = document.querySelector('#fondo-360');
+        const contador = document.getElementById('contador');
+        const nombreLugar = document.getElementById('nombreLugar');
+        const flechaIzq = document.getElementById('flechaIzq');
+        const flechaDer = document.getElementById('flechaDer');
 
-    // Event listeners para los botones
-    nextBtn.addEventListener('click', siguienteImagen);
-    prevBtn.addEventListener('click', anteriorImagen);
-
-    // Navegación con teclado
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'ArrowRight') {
-            siguienteImagen();
-        } else if (event.key === 'ArrowLeft') {
-            anteriorImagen();
+        function actualizarVista() {
+            const config = configuracion[lugarActual];
+            const totalImagenes = config.imagenes.length;
+            
+            cielo.setAttribute('src', config.imagenes[imagenActual]);
+            contador.textContent = `${imagenActual + 1} / ${totalImagenes}`;
+            nombreLugar.textContent = config.nombre;
         }
-    });
 
-    // Menú de selección de ubicación
-    menuItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const location = this.getAttribute('data-location');
-            cambiarUbicacion(location);
+        function imagenAnterior() {
+            const totalImagenes = configuracion[lugarActual].imagenes.length;
+            imagenActual = (imagenActual - 1 + totalImagenes) % totalImagenes;
+            actualizarVista();
+        }
+
+        function imagenSiguiente() {
+            const totalImagenes = configuracion[lugarActual].imagenes.length;
+            imagenActual = (imagenActual + 1) % totalImagenes;
+            actualizarVista();
+        }
+
+        function cambiarLugar(nuevoLugar) {
+            lugarActual = nuevoLugar;
+            imagenActual = 0;
+            
+            document.querySelectorAll('.boton-lugar').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-lugar="${nuevoLugar}"]`).classList.add('active');
+            
+            actualizarVista();
+        }
+
+        flechaIzq.addEventListener('click', imagenAnterior);
+        flechaDer.addEventListener('click', imagenSiguiente);
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') imagenAnterior();
+            if (event.key === 'ArrowRight') imagenSiguiente();
         });
-    });
 
-    // Inicializar la vista
-    cambiarUbicacion(ubicacionActual);
+        document.querySelectorAll('.boton-lugar').forEach(boton => {
+            boton.addEventListener('click', function() {
+                cambiarLugar(this.dataset.lugar);
+            });
+        });
 
+        actualizarVista();
     </script>
 </body>
 </html>
